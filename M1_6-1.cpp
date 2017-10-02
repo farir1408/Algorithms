@@ -4,7 +4,7 @@
 using namespace std;
 
 int f_piramids(int **table, int blocks) {
-    int result = 0;
+    int result = 0; // k - number of cubes, m - number of cubes at the bottom of pyramid
     for (int k = 1; k <= blocks; k++) {
         for (int m = 1; m <= blocks; m++) {
             if (k - m == 0) {
