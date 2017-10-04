@@ -87,9 +87,9 @@ int Queue::Dequeue() {
     if (secondStack->top)
         return secondStack->Pop();
     else {
-        if (firstStack->Empty())
+        if (firstStack->Empty()) {
             return -1;
-        else {
+        } else {
             while (firstStack->top)
                 secondStack->Push(firstStack->Pop());
             return secondStack->Pop();
@@ -97,10 +97,12 @@ int Queue::Dequeue() {
     }
 }
 
-int main()
-{
-    int n, val, com, num;
-    Queue *queue = new Queue;
+int main() {
+    int n = 0;
+    int val = 0;
+    int com = 0;
+    int num = 0;
+    Queue queue;
     cin >> n;
     for (int i = 0; i < n; i++) {
         cin >> com >> num;
@@ -119,6 +121,5 @@ int main()
         }
     }
     cout << "YES";
-    delete queue;
     return 0;
 }
