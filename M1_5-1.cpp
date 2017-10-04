@@ -79,7 +79,7 @@ int main() {
     char c = 0;
 
     while (true) {
-        cin >> c;
+        cin >> c; //костыль, что бы работало, в конце строки надо ввести 0
         if (c == '0')
             break;
         buffer.insert(buffer.end(), c);
