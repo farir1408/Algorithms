@@ -89,6 +89,8 @@ int main() {
     while (true) {
         c = static_cast<char>(cin.get());
         if (c == '\n')
+            continue;
+        if (c == EOF)
             break;
         firstStack.Push(c);
 //        buffer.insert(buffer.end(), c);
