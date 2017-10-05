@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #define INIT_SIZE 10
+#define FACTOR 2
 
 using namespace std;
 
@@ -41,6 +42,11 @@ char Stack::Pop() {
     return data[top];
 }
 
+void Stack::Resize() {
+    size *= FACTOR;
+    data = (char*)realloc(data, size * sizeof(char));
+}
+
 char conformity(char c) {
     switch (c) {
     case ')':
@@ -73,20 +79,24 @@ char conformity_2(char c) {
 
 
 int main() {
-    vector<char> buffer;
+//    vector<char> buffer;
     Stack stack;
+    Stack firstStack;
+    Stack secondStack;
     bool key = true;
     char c = 0;
 
     while (true) {
-        cin >> c; //костыль, что бы работало, в конце строки надо ввести 0
-        if (c == '0')
+        c = static_cast<char>(cin.get());
+        if (c == '\n')
             break;
-        buffer.insert(buffer.end(), c);
+        firstStack.Push(c);
+//        buffer.insert(buffer.end(), c);
         if (c == '(' || c == '[' || c == '{') {
             stack.Push(c);
         } else if (stack.top == 0) {
-            buffer.insert(buffer.begin(), conformity(c));
+            secondStack.Push(conformity(c));
+//            buffer.insert(buffer.begin(), conformity(c));
         } else {
             char val = stack.Pop();
             if (val != conformity(c)) {
@@ -97,12 +107,20 @@ int main() {
         }
     }
 
-
     if (key) {
         while (stack.top != 0) {
             char val = conformity_2(stack.Pop());
-            buffer.insert(buffer.end(), val);
+            firstStack.Push(val);
+//            buffer.insert(buffer.end(), val);
         }
-        copy(buffer.begin(), buffer.end(), ostreambuf_iterator<char>(cout));
+        while (secondStack.top != 0) {
+            cout << secondStack.Pop();
+        }
+        while (firstStack.top != 0) {
+            secondStack.Push(firstStack.Pop());
+        }
+        while (secondStack.top != 0)
+            cout << secondStack.Pop();
+//        copy(buffer.begin(), buffer.end(), ostreambuf_iterator<char>(cout));
     }
 }
