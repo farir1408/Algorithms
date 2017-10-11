@@ -125,4 +125,5 @@ int main() {
             cout << secondStack.Pop();
 //        copy(buffer.begin(), buffer.end(), ostreambuf_iterator<char>(cout));
     }
+    return 0;
 }
