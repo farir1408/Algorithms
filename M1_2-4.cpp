@@ -11,6 +11,6 @@ int main() {
     int n = 0;
     int k = 0;
     cin >> n >> k;
+    
     cout << josephus(n, k) << "\n";
-    return 0;
 }
