@@ -3,7 +3,7 @@
 //high pyramid
 using namespace std;
 
-int f_piramids(int **table, int blocks) {
+int f_piramids(long long **table, int blocks) {
     int result = 0; // k - number of cubes, m - number of cubes at the bottom of pyramid
     for (int k = 1; k <= blocks; k++) {
         
@@ -31,7 +31,7 @@ int main() {
     int n = 0;
     cin >> n;
 
-    int **table = new int*[n + 1];
+    long long **table = new int*[n + 1];
     for (int i = 0; i <= n; i++)
         table[i] = new int[n + 1];
 
