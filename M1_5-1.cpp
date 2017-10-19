@@ -10,41 +10,59 @@ public:
     Stack();
     ~Stack();
 
-    void Push(char value);
+    Stack &Push(char value);
     char Pop();
-    void Resize();
-    size_t top;
+
+    bool empty() const {
+        return 0 == _top;
+    }
+
+protected:
+    void Resize(size_t newSize);
 
 private:
-    char* data;
-    size_t size;
+    static auto constexpr INIT_SIZE = 10;
+    static auto constexpr FACTOR = 2;
+
+    size_t _size;
+    size_t _top;
+
+    char* _data;
 };
 
-Stack::Stack() {
-    size = INIT_SIZE;
-    data = new char[size];
-    top = 0;
-}
+Stack::Stack():
+    _size(INIT_SIZE),
+    _top(0),
+    _data(new char[_size]) {}
 
 Stack::~Stack() {
-    delete[] data;
+    delete[] _data;
 }
 
-void Stack::Push(char value) {
-    data[top] = value;
-    top++;
+Stack &Stack::Push(char value) {
+    if (_top >= _size)
+        Resize(_size * FACTOR);
+
+    _data[_top++] = value;
+
+    return *this;
 }
 
 char Stack::Pop() {
-    if (top == 0)
-        return -1;
-    top--;
-    return data[top];
+    if (0 == _top)
+        return 0;
+
+    return _data[--_top];
 }
 
-void Stack::Resize() {
-    size *= FACTOR;
-    data = (char*)realloc(data, size * sizeof(char));
+void Stack::Resize(size_t newSize) {
+    auto newData = new char[newSize];
+    std::copy(_data, _data + _size, newData);
+
+    delete[] _data;
+
+    _data = newData;
+    _size = newSize;
 }
 
 char conformity(char c) {
@@ -79,10 +97,10 @@ char conformity_2(char c) {
 
 
 int main() {
-//    vector<char> buffer;
     Stack stack;
     Stack firstStack;
     Stack secondStack;
+    
     bool key = true;
     char c = 0;
 
@@ -90,15 +108,15 @@ int main() {
         c = static_cast<char>(cin.get());
         if (c == '\n')
             continue;
+        
         if (c == EOF)
             break;
+        
         firstStack.Push(c);
-//        buffer.insert(buffer.end(), c);
         if (c == '(' || c == '[' || c == '{') {
             stack.Push(c);
         } else if (stack.top == 0) {
             secondStack.Push(conformity(c));
-//            buffer.insert(buffer.begin(), conformity(c));
         } else {
             char val = stack.Pop();
             if (val != conformity(c)) {
@@ -113,17 +131,19 @@ int main() {
         while (stack.top != 0) {
             char val = conformity_2(stack.Pop());
             firstStack.Push(val);
-//            buffer.insert(buffer.end(), val);
         }
+        
         while (secondStack.top != 0) {
             cout << secondStack.Pop();
         }
+        
         while (firstStack.top != 0) {
             secondStack.Push(firstStack.Pop());
         }
+        
         while (secondStack.top != 0)
             cout << secondStack.Pop();
-//        copy(buffer.begin(), buffer.end(), ostreambuf_iterator<char>(cout));
     }
+    
     return 0;
 }
