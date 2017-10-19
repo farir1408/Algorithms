@@ -14,12 +14,12 @@ public:
     void Push(int val);
     int Pop();
     void Resize();
-    bool Empty();
-    size_t top;
-    bool init = false;
+    bool Empty() const;
+    
 private:
-    int *data;
-    size_t size;
+    int* _data;
+    size_t _size;
+    size_t _top;
 
 };
 
@@ -30,71 +30,70 @@ public:
 
     void Enqueue(int val);
     int Dequeue();
+    
 private:
-    Stack *firstStack;
-    Stack *secondStack;
+    Stack _firstStack;
+    Stack _secondStack;
 };
 
 Stack::Stack() {
-    size = INIT_SIZE;
-    data = (int*)calloc(size, sizeof(int));
-    top = 0;
-    init = true;
+    _size = INIT_SIZE;
+    _data = (int*)calloc(_size, sizeof(int));
+    _top = 0;
 }
 
 Stack::~Stack() {
-    free(data);
+    free(_data);
 }
 
-bool Stack::Empty() {
-    return (!init && Stack::top == 0);
+bool Stack::Empty() const {
+    return (Stack::_top == 0);
 }
 
 void Stack::Push(int val) {
-    if (top >= size)
+    if (_top >= _size)
         Resize();
-    data[top] = val;
-    top ++;
+    _data[_top] = val;
+    _top ++;
 }
 
 int Stack::Pop() {
-    if (top == 0)
+    if (_top == 0)
         return -1;
-    top --;
-    return data[top];
+    _top --;
+    return _data[_top];
 }
 
 void Stack::Resize() {
-    size *= FACTOR;
-    data = (int*)realloc(data, size * sizeof(int));
+    _size *= FACTOR;
+    _data = (int*)realloc(_data, _size * sizeof(int));
 }
 
 Queue::Queue() {
-    firstStack = new Stack;
-    secondStack = new Stack;
+    _firstStack = new Stack;
+    _secondStack = new Stack;
 }
 
 Queue::~Queue() {
-    delete firstStack;
-    delete secondStack;
+    delete _firstStack;
+    delete _secondStack;
 }
 
 void Queue::Enqueue(int val) {
-    firstStack->Push(val);
+    _firstStack.Push(val);
 }
 
 int Queue::Dequeue() {
-    if (secondStack->top)
-        return secondStack->Pop();
-    else {
-        if (firstStack->Empty()) {
-            return -1;
-        } else {
-            while (firstStack->top)
-                secondStack->Push(firstStack->Pop());
-            return secondStack->Pop();
-        }
-    }
+    if (_secondStack._top)
+        return _secondStack.Pop();
+    
+    if (_firstStack.Empty())
+        return -1;
+    
+    while (_firstStack._top)
+        _secondStack.Push(_firstStack.Pop());
+
+    return _secondStack.Pop();
 }
 
 int main() {
@@ -104,11 +103,12 @@ int main() {
     int num = 0;
     Queue queue;
     cin >> n;
+    
     for (int i = 0; i < n; i++) {
         cin >> com >> num;
         switch (com) {
         case 2:
-            val = queue->Dequeue();
+            val = queue.Dequeue();
             if (val != num) {
                 cout << "NO";
                 delete queue;
@@ -116,7 +116,7 @@ int main() {
             }
             break;
         case 3:
-            queue->Enqueue(num);
+            queue.Enqueue(num);
             break;
         }
     }
