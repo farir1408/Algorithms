@@ -2,68 +2,84 @@
 #include <cstring>
 #include <string>
 #include <conio.h>
+#include <typeinfo>
 
 
-bool cmpStr(char* str1, char* str2) {
+bool cmpStr(const std::string &str1, const std::string &str2) {
     size_t size = 0;
+    size_t k = 0;
 
-    size = sizeof(str1) <= sizeof(str2) ? sizeof(str1) : sizeof(str2);
+    size = str1.length() <= str2.length() ? str1.length() : str2.length();
 
     for (size_t i = 0; i < size; i++) {
-        if (str1[i] >= str2[i])
-            return false;
+        if (str1[i] != str2[i]) {
+            if (str1[i] < str2[i])
+                return false;
+            else
+                return true;
+        } else {
+            k++;
+        }
     }
+
+    if (k == size && size == str1.length())
+        return false;
+
     return true;
 }
 
-int BinarySearchStr(char** stringArr, int left, int right, char* value) {
+int BinarySearchStr(std::string* &stringArr, size_t left,
+                    size_t right, const std::string &value) {
 
-    if (!cmpStr(value, stringArr[right]))
+    if (cmpStr(value, stringArr[right]))
         return right + 1;
 
-    if (cmpStr(value, stringArr[0]))
+    if (!cmpStr(value, stringArr[0]))
         return 0;
 
-    int mid = left + (right - left) / 2;
+    size_t mid = left + (right - left) / 2;
 
     if (right - left == 1)
         return right;
 
-    if (cmpStr(value, stringArr[mid]))
+    if (!cmpStr(value, stringArr[mid]))
         return BinarySearchStr(stringArr, left, mid, value);
     else
         return BinarySearchStr(stringArr, mid, right, value);
 }
 
-void sortString(char** stringArr, int n) {
+void sortString(std::string* stringArr, size_t n) {
 
-    for (int i = 1; i < n; i++) {
-        char* tmp = stringArr[i];
+    for (size_t i = 1; i < n; i++) {
+        std::string tmp = stringArr[i];
         int right = i -1;
-        int pointer = BinarySearchStr(stringArr, 0, right, stringArr[i]);
+        size_t pointer = BinarySearchStr(stringArr, 0, right, stringArr[i]);
 
         if (pointer < i) {
-            memmove(&stringArr[i + pointer + 1], &stringArr[i + pointer], (i - pointer) * sizeof(char));
+            memmove(&stringArr[pointer + 1], &stringArr[pointer], (i - pointer) * sizeof(char));
             stringArr[pointer] = tmp;
         }
     }
 }
 
 int main() {
-    int n = 0;
+    size_t n = 0;
 
     std::cin >> n;
 
-    char** stringArr = new char*[n];
+    auto stringArr = new std::string[n];
 
-    for (int i = 0; i <= n; i++) {
-        stringArr[i] = new char[255];
-        std::cin.getline(stringArr[i], 255);
+    for (size_t i = 0; i < n; i++) {
+        std::cin >> stringArr[i];
     }
+
+//    std::cout << typeid(stringArr[1]).name();
 
     sortString(stringArr, n);
 
-    for (int i = 0; i < n; i++) {
+    for (size_t i = 0; i < n; i++) {
         std::cout << stringArr[i] << '\n';
     }
+
+    delete[] stringArr;
 }
