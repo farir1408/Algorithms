@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cstring>
 #include <string>
-#include <conio.h>
 #include <typeinfo>
 
 
@@ -51,14 +50,19 @@ int BinarySearchStr(std::string* &stringArr, size_t left,
 void sortString(std::string* stringArr, size_t n) {
 
     for (size_t i = 1; i < n; i++) {
-        std::string tmp = stringArr[i];
-        int right = i -1;
-        size_t pointer = BinarySearchStr(stringArr, 0, right, stringArr[i]);
+        int right = i - 1;
+        int pointer = BinarySearchStr(stringArr, 0, right, stringArr[i]);
+        std::string tmp = std::move(stringArr[i]);
 
-        if (pointer < i) {
-            memmove(&stringArr[pointer + 1], &stringArr[pointer], (i - pointer) * sizeof(char));
-            stringArr[pointer] = tmp;
+        int j = i - 1;
+        for (; j >= pointer; --j) {
+            stringArr[j + 1] = std::move(stringArr[j]);
         }
+        stringArr[pointer] = std::move(tmp);
+//        if (pointer < i) {
+//            memmove(&stringArr[pointer + 1], &stringArr[pointer], (i - pointer) * sizeof(char));
+//            stringArr[pointer] = std::move(tmp);
+//        }
     }
 }
 
@@ -72,8 +76,6 @@ int main() {
     for (size_t i = 0; i < n; i++) {
         std::cin >> stringArr[i];
     }
-
-//    std::cout << typeid(stringArr[1]).name();
 
     sortString(stringArr, n);
 
