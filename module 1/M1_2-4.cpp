@@ -21,3 +21,4 @@ int main() {
     
     cout << josephus(n, k) << "\n";
 }
+-
